@@ -1,0 +1,183 @@
+﻿@model PillaniConnect.Models.Cls_Masters
+
+@{
+    ViewData["Title"] = "Designation";
+}
+
+<style>
+    .spnCustom {
+        color: #827777;
+        font-size: 12px;
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link href="~/plugins/fontawesome-free/css/all.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/plugins/sweetalert2/sweetalert2.min.css">
+
+
+<div class="content-header">
+    @*<div class="container-fluid">*@
+    <div class="row mb-2">
+        <div class="col-sm-6">
+            <h1 class="m-0">Masters <span class="spnCustom">Designation</span></h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="#">Designation</a></li>
+                <li class="breadcrumb-item active">Masters</li>
+            </ol>
+        </div>
+    </div>
+    @*</div>*@
+</div>
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Designation List</h3>
+                <a href="#" id="btn_add" title="Add  Designation" class="btn btn-sm btn-info text-white" style="float:right"><i class="fa fa-plus-circle"></i> Add</a>
+            </div>
+            <div class="card-body">
+                <table id="example1" class="table table-bordered table-striped">
+                    <thead class="mytableheader">
+                        <tr>
+
+                            <th>Designation</th>
+                            <th>Postedby</th>
+                            <th>posted datetime</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model._DesList != null && Model._DesList.Count > 0)
+                        {
+                            int i = 0;
+                            foreach (var item in Model._DesList)
+                            {
+
+                                <tr style="font-size:14px; font-weight:500">
+
+                                    <td>@Html.DisplayFor(modelItem => item.designation)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.postedby)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.posteddatetime)</td>
+
+                                </tr>
+                            }
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade bs-example-modal-lg" id="MapPopup">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modalHeader"></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="AddList">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade bs-example-modal-sm" id="EditPopup" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm" @*style="max-width:200px"*@>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="mHeader"></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+
+                </div>
+                <div class="modal-body" id="EditbodyList">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+}
+
+<script src="~/plugins/jquery/jquery.js"></script>
+<script src="~/plugins/sweetalert2/sweetalert2.min.js"></script>
+<script src="~/plugins/toastr/toastr.min.js"></script>
+
+<script>
+    setTimeout(function () {
+        $('#divMsg').fadeOut('fast');
+    }, 3000);
+    $(document).ready(function () {
+        $('a').removeClass('active');
+        $('li').removeClass('menu-open');
+        $("#liMasters").addClass('menu-open');
+        $("#aMasters").addClass('active');
+        $("#aDesignationMaster").addClass('active');
+
+        $('#custom-tabs-three-home-tab').addClass('active');
+
+    });
+
+    $('#btn_add').click(function () {
+        $('#modalHeader').text('Add Designation');
+        $.ajax({
+            url: "/Masters/AddDesignation",
+            type: "Get",
+            contentType: "application/json; charset=utf-8",
+            datatype: "json",
+            success: function (result) {
+                //console.log(result);
+                $('#MapPopup').modal({ backdrop: 'static' });//, keyboard: false
+                $('#AddList').empty();
+                $('#AddList').append(result);
+                $('#MapPopup').modal('show');
+            },
+            failure: function (result) {
+                alert('Fail To Load data');
+            },
+            error: function (result) {
+            }
+        });
+    });
+
+</script>
+
+<script>
+    $(document).ready(function () {
+
+
+        var Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+        });
+
+        var message = '@ViewBag.Message';
+        console.log(message);
+
+        if (message !== null && message !== '') {
+
+            Toast.fire({
+                icon: 'success',
+                title: '@ViewBag.Message'
+            })
+
+        }
+        else {
+
+        }
+
+    });
+</script>

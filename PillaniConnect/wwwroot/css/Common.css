@@ -1,0 +1,37 @@
+﻿body {
+}
+
+th {
+    font-weight: normal;
+}
+
+td {
+    font-weight: normal;
+}
+
+/*.badge {
+    color: cornflowerblue;
+    font-weight: normal;
+    font-size: 16px;
+}
+
+.badge-color {
+    color: #4d4d4d;
+    font-weight: normal;
+    font-size: 16px;
+}
+*/
+label:not(.form-check-label):not(.custom-file-label) {
+    font-weight: normal;
+}
+/*.InProgress {
+    color: #4d4d4d;
+}
+
+.Completed {
+    color: #4d4d4d;
+}
+
+.Total {
+    color: #4d4d4d;
+}*/

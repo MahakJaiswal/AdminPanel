@@ -1,0 +1,36 @@
+﻿@model PillaniConnect.Models.Cls_Masters
+@{
+    ViewData["Title"] = "AddIndusrty";
+    Layout = null;
+}
+
+<link href="~/css/bootstrap-multiselect.css" rel="stylesheet" />
+
+<div class="panel panel-info">
+    <div class="panel-heading"></div>
+    <div class="panel-body">
+
+        <div class="row">
+
+            <div class="col-md-12">
+                <div class="form-group">
+                    @Html.TextBoxFor(model => model.industry, new { @class = "form-control", placeholder = "Enter  industry. " })
+                </div>
+            </div>
+
+        </div>
+
+        <div>
+            <div class="form-group" id="btn_Email">
+                <button type="submit" id="btn_submit" class="btn btn-default" name="Save" value="Save" onclick="myFunction()"> Submit </button>
+                <button type="reset" class="btn btn-default" id="btn_close"> Reset </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<script src="~/Js/jquery-ui.js"></script>
+<script src="~/Js/bootstrap-multiselect.js"></script>
+<script src="~/plugins/jquery-ui/jquery-ui.js"></script>

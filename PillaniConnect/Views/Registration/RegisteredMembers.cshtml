@@ -1,0 +1,270 @@
+﻿@model PilaniConnect.Models.Cls_Registration
+
+@{
+    ViewData["Title"] = "RegisteredMembers";
+}
+
+
+<link href="~/plugins/fontawesome-free/css/all.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="~/plugins/sweetalert2/sweetalert2.min.css">
+
+
+<style>
+
+    span + span {
+        margin-left: 200px;
+    }
+
+    .spnCustom {
+        color: #827777;
+        font-size: 12px;
+    }
+
+    .Total {
+        border: 2px solid #adadad;
+        border-radius: 10px;
+    }
+
+</style>
+
+<div class="content-header">
+    @*<div class="container-fluid">*@
+    <div class="row mb-2">
+        <div class="col-sm-6">
+            <h1 class="m-0">Home  <span class="spnCustom">Dashboard</span></h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                <li class="breadcrumb-item active">Home</li>
+            </ol>
+        </div>
+    </div>
+    @*</div>*@
+</div>
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <span class="badge Total" style="color:#827777">
+                    <b>Total Connection (@(Model._List != null ? Model._List.Count.ToString() : "0"))</b>
+                </span>
+                @if (@Context.Session.GetString("Accounttype") == "Admin")
+                {
+                    <a href="#" id="btn_add" title="Add Visitor card" class="btn btn-sm btn-info text-white" style="float:right"><i class="fa fa-plus-circle"></i> Add</a>
+
+                }
+                else
+                {
+
+                }
+            </div>
+        </div>
+    </div>
+
+    <section class="vh-100" style="background-color: #eee;">
+
+        <div class="card card-solid">
+            <div class="card-body pb-0">
+                <div class="row">
+                    @if (Model._List != null && Model._List.Count > 0)
+                    {
+                        int i = 0;
+                        foreach (var item in Model._List)
+                        {
+                            string imgID = i.ToString();
+                            <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch flex-column">
+                                <div class="card bg-light d-flex flex-fill">
+                                    <div class="card-header text-muted border-bottom-0">
+                                        <span><b> @Html.DisplayFor(modelItem => item.Industry)</b> </span> <span> <b> @Html.DisplayFor(modelItem => item.Designation) </b> </span>
+                                    </div>
+                                    <div class="card-body pt-0">
+                                        <div class="row">
+                                            <div class="col-7">
+                                                <h2 class="lead"><b>@Html.DisplayFor(modelItem => item.Name)</b></h2>
+                                                <ul class="ml-4 mb-0 fa-ul text-muted">
+                                                    <li class="small"><span class="fa-li"><i class="fa fa-map-pin" style="color: red"></i></span> @Html.DisplayFor(modelItem => item.City)</li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-5 text-center">
+                                                <a data-gallery="photoviewer" data-group="a" id="@imgID" href="@Html.DisplayFor(modelItem => item.photo)">
+                                                    <span><img src="@Html.DisplayFor(modelitem => item.photo)" alt="" height="70" width="70" style="border-radius: 50%; border:2px solid #424949 ; object-fit:cover" /></span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="text-right">
+                                            <a href="#" class="btn btn-sm bg-teal">
+                                                <i class="fa-regular fa-message"></i> Message
+                                            </a>
+
+                                            <button type="button" title="View Profile" class="btn btn-sm btn-primary" onclick='javascript: displayStatusPopup("@Url.Content(item.ReegUuid.ToString())");'><span class="spnCustom" style="color:white;font:bold">View Profile</span></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            i++;
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="modal fade bs-example-modal-lg" id="EditPopup" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="mHeader"></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+
+                </div>
+                <div class="modal-body" id="EditbodyList">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade bs-example-modal-lg" id="MapPopup">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modalHeader"></h4>
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="AddList">
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+<script src="~/plugins/jquery/jquery.js"></script>
+<script src="~/plugins/sweetalert2/sweetalert2.min.js"></script>
+<script src="~/plugins/toastr/toastr.min.js"></script>
+
+<script>
+    setTimeout(function () {
+        $('#divMsg').fadeOut('fast');
+    }, 3000);
+    $(document).ready(function () {
+        $('a').removeClass('active');
+        $('li').removeClass('menu-open');
+        $("#liDashboard").addClass('menu-open');
+        $("#aDashboard").addClass('active');
+        $("#aVisitorMaster").addClass('active');
+
+        $('#custom-tabs-three-home-tab').addClass('active');
+
+    });
+
+    $('#btn_add').click(function () {
+        $('#modalHeader').text('Add User');
+        $.ajax({
+            url: "/Registration/AddUser",
+            type: "Get",
+            contentType: "application/json; charset=utf-8",
+            datatype: "json",
+            success: function (result) {
+                //console.log(result);
+                $('#MapPopup').modal({ backdrop: 'static' });//, keyboard: false
+                $('#AddList').empty();
+                $('#AddList').append(result);
+                $('#MapPopup').modal('show');
+            },
+            failure: function (result) {
+                alert('Fail To Load data');
+            },
+            error: function (result) {
+            }
+        });
+    });
+
+    function displayStatusPopup(accID) {
+        $('#mHeader').text('User Profile');
+        if (accID != "") {
+            $.ajax({
+                url: "/Registration/UserProfile",
+                type: "Get",
+                contentType: "application/json; charset=utf-8",
+                data: { "UserId": accID },
+                datatype: "json",
+                success: function (result) {
+                    console.log(result);
+                    $('#EditPopup').modal({ backdrop: 'static' });//, keyboard: false
+                    $('#EditbodyList').empty();
+                    $('#EditbodyList').append(result);
+                    $('#EditPopup').modal('show');
+                },
+                failure: function (result) {
+                    alert('Fail To Load data');
+                },
+                error: function (result) {
+                }
+            });
+        }
+    }
+
+    $('[data-gallery=photoviewer]').click(function (e) {
+
+        e.preventDefault();
+        var items = [],
+            options = {
+                index: $(this).attr('id'),
+                title: false,
+
+
+            };
+
+        $('[data-gallery=photoviewer]').each(function () {
+            items.push({
+                title: $(this).attr('data-title'),
+                src: $(this).attr('href'),
+            });
+
+        });
+
+        new PhotoViewer(items, options);
+
+    });
+
+</script>
+
+<script>
+    $(document).ready(function () {
+
+
+        var Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+        });
+
+        var message = '@ViewBag.Message';
+        console.log(message);
+
+        if (message !== null && message !== '') {
+
+            Toast.fire({
+                icon: 'success',
+                title: '@ViewBag.Message'
+            })
+
+        }
+        else {
+
+        }
+
+    });
+</script>

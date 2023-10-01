@@ -1,0 +1,208 @@
+﻿@model PilaniConnect.Models.Cls_Registration
+
+@{
+    ViewData["Title"] = "ProfileMaster";
+}
+
+<style>
+    .marginBottom {
+        margin-bottom: 4px !important;
+    }
+
+    .spnCustom {
+        color: #827777;
+        font-size: 12px;
+    }
+
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link href="~/plugins/fontawesome-free/css/all.css" rel="stylesheet" />
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+
+<div class="content-header">
+    @*<div class="container-fluid">*@
+    <div class="row mb-2">
+        <div class="col-sm-6">
+            <h1 class="m-0">Home  <span class="spnCustom">my profile</span></h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="#">my profile</a></li>
+                <li class="breadcrumb-item active">Home</li>
+            </ol>
+        </div>
+    </div>
+    @*</div>*@
+</div>
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                @if (Model._DetailsList != null && Model._DetailsList.Count > 0)
+                {
+                    int i = 0;
+                    foreach (var item in Model._DetailsList)
+                    {
+                        string imgID = i.ToString();
+                        <div class="col-md-3">
+
+                            <!-- Profile Image -->
+                            <div class="card card-primary card-outline">
+                                <div class="card-body box-profile">
+                                    <div class="text-center">
+                                        <a data-gallery="photoviewer" data-group="a" id="@imgID" href="@Html.DisplayFor(modelItem => item.photo)">
+                                            <span><img src="@Html.DisplayFor(modelitem => item.photo)" alt="" height="80" width="80" style="border-radius: 50%; object-fit: cover" /></span>
+                                        </a>
+                                    </div>
+
+                                    <h3 class="profile-username text-center">@Html.DisplayFor(modelItem => item.Name)</h3>
+
+                                    <p class="text-muted text-center">@Html.DisplayFor(modelItem => item.description)</p>
+
+                                    <ul class="list-group list-group-unbordered mb-3">
+                                        @*<li class="list-group-item">
+                            <b>Followers</b> <a class="float-right">1,322</a>
+                            </li>
+                            <li class="list-group-item">
+                            <b>Following</b> <a class="float-right">543</a>
+                            </li>
+                            <li class="list-group-item">
+                            <b>Friends</b> <a class="float-right">13,287</a>
+                            </li>*@
+                                    </ul>
+                                    <a href="#" class="btn btn-primary btn-block"><b>Edit</b></a>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+
+                        </div>
+                        <div class="col-md-6">
+
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">About Me</h3>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body">
+                                    <strong><i class="fas fa-book mr-1"></i> Education</strong>
+
+                                    <p class="text-muted">
+                                        B.S. in Computer Science from the University of Tennessee at Knoxville
+                                    </p>
+                                    <hr>
+                                    <strong><i class="fas fa-map-marker-alt mr-1"></i> Location</strong>
+                                    <p class="text-muted">@Html.DisplayFor(modelItem => item.Address)</p>
+                                    <hr>
+                                    <strong><i class="fas fa-pencil-alt mr-1"></i> Skills</strong>
+                                    <p class="text-muted">
+                                        <span class="tag tag-danger">UI Design</span>
+                                        <span class="tag tag-success">Coding</span>
+                                        <span class="tag tag-info">Javascript</span>
+                                        <span class="tag tag-warning">PHP</span>
+                                        <span class="tag tag-primary">Node.js</span>
+                                    </p>
+                                    <hr>
+                                    <strong><i class="far fa-file-alt mr-1"></i> Notes</strong>
+                                    <p class="text-muted">@Html.DisplayFor(modelItem => item.description)</p>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+
+                        </div>
+
+                    }
+                }
+
+                <!-- /.col -->
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <div class="modal fade bs-example-modal-lg" id="MapPopup">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modalHeader"></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="AddList">
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+<script src="~/plugins/jquery/jquery.js"></script>
+
+
+<script>
+    setTimeout(function () {
+        $('#divMsg').fadeOut('fast');
+    }, 3000);
+    $(document).ready(function () {
+        $('a').removeClass('active');
+        $('li').removeClass('menu-open');
+        $("#liDashboard").addClass('menu-open');
+        $("#aDashboard").addClass('active');
+        $("#aProfileMaster").addClass('active');
+
+        $('#custom-tabs-three-home-tab').addClass('active');
+
+    });
+
+    function displayStatusPopup(accID) {
+        $('#mHeader').text('Edit Profile');
+        if (accID != "") {
+            $.ajax({
+                url: "/Registartion/EditVisitorStatus",
+                type: "Get",
+                contentType: "application/json; charset=utf-8",
+                data: { "UserId": accID },
+                datatype: "json",
+                success: function (result) {
+                    $('#MapPopup').modal({ backdrop: 'static' });//, keyboard: false
+                    $('#AddList').empty();
+                    $('#AddList').append(result);
+                    $('#MapPopup').modal('show');
+                },
+                failure: function (result) {
+                    alert('Fail To Load data');
+                },
+                error: function (result) {
+                }
+            });
+        }
+    }
+
+    $('[data-gallery=photoviewer]').click(function (e) {
+
+        e.preventDefault();
+        var items = [],
+            options = {
+                index: $(this).attr('id'),
+                title: false,
+
+            };
+
+        $('[data-gallery=photoviewer]').each(function () {
+            items.push({
+                title: $(this).attr('data-title'),
+                src: $(this).attr('href'),
+            });
+
+        });
+
+        new PhotoViewer(items, options);
+
+    });
+
+</script>

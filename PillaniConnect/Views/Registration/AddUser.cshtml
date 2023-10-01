@@ -1,0 +1,221 @@
+﻿@model PilaniConnect.Models.Cls_Registration
+@{
+    ViewData["Title"] = "AddUser";
+    Layout = null;
+}
+<style>
+    .form-group {
+        line-height: 0.3; /* Adjust the line height value to your desired spacing */
+    }
+</style>
+
+<link href="~/css/bootstrap-multiselect.css" rel="stylesheet" />
+
+<div class="panel panel-info">
+    <div class="panel-heading"></div>
+        <div class="panel-body" id="addUserForm">
+
+        <div class="row">
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.TextBoxFor(model => model.Name, new { @class = "form-control", placeholder = "Enter  Name. " })
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.DropDownListFor(model => model.Designation, new SelectList(Model.DesignationDDL.Select(x => new { Value = x.Value, Text = x.Text }), "Value", "Text", Model.DesignationDDL), "Select Designation", new { @class = "form-control", required="required" })
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.DropDownListFor(model => model.Industry, new SelectList(Model.IndustryDDL.Select(x => new { Value = x.Value, Text = x.Text }), "Value", "Text", Model.IndustryDDL), "Select Industry", new { @class = "form-control", required="required" })
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.TextBoxFor(model => model.Company, new { @class = "form-control", placeholder = "Enter Company " })
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.TextBoxFor(model => model.Contact1, new { @class = "form-control", placeholder = "Enter Main Contact No " ,maxlength = "10" })
+
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.TextBoxFor(model => model.Contact2, new { @class = "form-control", placeholder = "Enter Alternative Contact No " ,maxlength = "10"})
+
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.TextBoxFor(model => model.Emailid, new { @class = "form-control", placeholder = "Enter EmailId" })
+
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.TextBoxFor(model => model.Address, new { @class = "form-control", placeholder = "Enter Address" })
+
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.DropDownListFor(model => model.Country, new SelectList(Model.CountryDDL.Select(x => new { Value = x.Value, Text = x.Text }), "Value", "Text", Model.CountryDDL), "Select Country", new { @class = "form-control", required="required" })
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.DropDownListFor(model => model.State, new SelectList(Model.StateDDL.Select(x => new { Value = x.Value, Text = x.Text }), "Value", "Text", Model.StateDDL), "Select State", new { @class = "form-control", required="required" })
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.DropDownListFor(model => model.City, new SelectList(Model.CityDDL.Select(x => new { Value = x.Value, Text = x.Text }), "Value", "Text", Model.CityDDL), "Select State", new { @class = "form-control", required="required" })
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.TextBoxFor(model => model.Pincode, new { @class = "form-control", placeholder = "Enter Pincode" })
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.TextBoxFor(model => model.description, new { @class = "form-control", placeholder = "Enter Description" })
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="ProfilePhoto">Profile Photo </label>
+                    <input type="file" name="postedFile" class="btn btn-sm btn-primary" style="width:100%" />
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="col-md-5" style="">
+            <div class="form-group" id="btn_Email">
+                <button type="submit" id="btn_submit" class="btn btn-default" name="Save" value="Save" onclick="myFunction()"> Submit </button>
+                <button type="reset" class="btn btn-default" id="btn_close"> Reset </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+@*<script src="~/cdnjs/signalr.min.js"></script>
+*@<script src="~/Js/jquery-ui.js"></script>
+<script src="~/Js/bootstrap-multiselect.js"></script>
+<script src="~/plugins/jquery-ui/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+
+<script>
+    $(document).ready(function () {
+
+        $("#Country").change(function () {
+
+            $('#State').attr('disabled', true);
+            var Deptuuid = $("#State :selected").val();
+            $('#State').attr('disabled', false);
+
+            if (Deptuuid != null && Deptuuid != "") {
+                $.ajax({
+                    url: '../Registration/GetStateByCountry',
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    data: { "Country": Deptuuid },
+                    success: function (result) {
+                        $("#State").html("");
+
+                        $("#State").append($('<option></option>').val('0').html('Select State '));
+                        $.each(result, function (i, reportId) {
+
+                            $("#State").append($('<option></option>').val(reportId.value).html(reportId.text));
+                        });
+                    }
+                });
+            }
+        });
+        $(document).ready(function () {
+
+            $("#State").change(function () {
+
+                $('#City').attr('disabled', true);
+                var Deptuuid = $("#City :selected").val();
+                $('#City').attr('disabled', false);
+
+                if (Deptuuid != null && Deptuuid != "") {
+                    $.ajax({
+                        url: '../Registration/GetCityByCountry',
+                        type: "GET",
+                        contentType: "application/json; charset=utf-8",
+                        data: { "State": Deptuuid },
+                        success: function (result) {
+                            $("#City").html("");
+
+                            $("#City").append($('<option></option>').val('0').html('Select City '));
+                            $.each(result, function (i, reportId) {
+
+                                $("#City").append($('<option></option>').val(reportId.value).html(reportId.text));
+                            });
+                        }
+                    });
+                }
+            });
+
+            $('#selvisitorcardno').multiselect({
+                nonSelectedText: 'Select Visitor Card',
+                includeSelectAllOption: true,
+                buttonWidth: 245,
+                enableFiltering: true,
+                enableCaseInsensitiveFiltering: true,
+                numberDisplayed: 5
+            });
+
+
+        });
+
+        $(document).ready(function () {
+            // Form submission event handler
+            $('#addUserForm').submit(function (event) {
+                event.preventDefault(); // Prevent default form submission
+
+                // Get the form data
+                var formData = $(this).serialize();
+
+                // Send an AJAX request to save the new user
+                $.ajax({
+                    url: '/Registration/AddUser', // Modify the URL to match your controller and action
+                    type: 'POST',
+                    data: formData,
+                    success: function (result) {
+                        // Update the notification icon with the success message
+                        updateNotificationIcon('New user added successfully!');
+                    },
+                    error: function (error) {
+                        console.error('Error adding user:', error);
+                        // Update the notification icon with the error message
+                        updateNotificationIcon('Failed to add the user. Please try again.');
+                    }
+                });
+            });
+
+            // Function to update the notification icon
+            function updateNotificationIcon(message) {
+                // Update your notification icon here with the provided message
+                // For example, if you have a span element with the ID "notificationIcon":
+                $('#notificationIcon').text(message);
+            }
+        });
+        
+</script>
+
+
+
+
